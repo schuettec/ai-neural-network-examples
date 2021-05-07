@@ -9,147 +9,162 @@ import org.neuroph.nnet.Perceptron;
 
 public class Main {
 
+  public static class TrafficLights {
+    private double[] inputRow = new double[5];
+
+    public TrafficLights red() {
+      inputRow[0] = 1;
+      inputRow[1] = 0;
+      inputRow[2] = 0;
+      return this;
+    }
+
+    public TrafficLights orange() {
+      inputRow[0] = 0;
+      inputRow[1] = 1;
+      inputRow[2] = 0;
+      return this;
+    }
+
+    public TrafficLights green() {
+      inputRow[0] = 0;
+      inputRow[1] = 0;
+      inputRow[2] = 1;
+      return this;
+    }
+
+    public TrafficLights carComing() {
+      inputRow[3] = 1;
+      return this;
+    }
+
+    public TrafficLights walking() {
+      inputRow[4] = 1;
+      return this;
+    }
+
+    public double[] toInput() {
+      return inputRow;
+    }
+
+    public DataSetRow thenDead() {
+      return new DataSetRow(inputRow, new double[] {
+          0
+      });
+    }
+
+    public DataSetRow thenOk() {
+      return new DataSetRow(inputRow, new double[] {
+          1
+      });
+    }
+
+    public static TrafficLights create() {
+      TrafficLights trafficLights = new TrafficLights();
+      return trafficLights;
+    }
+
+    public static String toAnswer(double[] answer) {
+      if (answer[0] == 0) {
+        return "You're dead!";
+      } else {
+        return "You're fine!";
+      }
+    }
+  }
+
   public static void main(String[] args) {
 
-    DataSet trainingSet = new DataSet(12, 5);
-    trainingSet.add(new DataSetRow(new double[] {
-        1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
-    }, new double[] {
-        1, 1, 0, 0, 0
-    }));
-    trainingSet.add(new DataSetRow(new double[] {
-        0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
-    }, new double[] {
-        1, 1, 1, 0, 0
-    }));// 2
+    // Ampel Rot, Ampel Gelb, Ampel Grün, Fahrzeug sichtbar
 
-    trainingSet.add(new DataSetRow(new double[] {
-        0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0
-    }, new double[] {
-        0, 0, 0, 1, 0
-    }));// 3
-
-    trainingSet.add(new DataSetRow(new double[] {
-        0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0
-    }, new double[] {
-        1, 1, 0, 0, 0
-    }));// 4
-
-    trainingSet.add(new DataSetRow(new double[] {
-        0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0
-    }, new double[] {
-        0, 1, 0, 0, 0
-    }));// 5
-
-    trainingSet.add(new DataSetRow(new double[] {
-        0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0
-    }, new double[] {
-        0, 0, 0, 1, 0
-    }));// 6
-
-    trainingSet.add(new DataSetRow(new double[] {
-        0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0
-    }, new double[] {
-        0, 1, 0, 0, 0
-    }));// 7
-
-    trainingSet.add(new DataSetRow(new double[] {
-        0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0
-    }, new double[] {
-        0, 0, 0, 1, 0
-    }));// 8
-
-    trainingSet.add(new DataSetRow(new double[] {
-        0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0
-    }, new double[] {
-        0, 1, 0, 0, 0
-    }));// 9
-
-    trainingSet.add(new DataSetRow(new double[] {
-        0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0
-    }, new double[] {
-        0, 1, 0, 0, 0
-    }));// 10
-
-    trainingSet.add(new DataSetRow(new double[] {
-        0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0
-    }, new double[] {
-        0, 1, 0, 0, 0
-    }));// 11
-
-    trainingSet.add(new DataSetRow(new double[] {
-        0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0
-    }, new double[] {
-        0, 0, 0, 1, 0
-    }));// 12
-
-    trainingSet.add(new DataSetRow(new double[] {
-        0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0
-    }, new double[] {
-        0, 1, 0, 0, 0
-    }));// 13
-
-    trainingSet.add(new DataSetRow(new double[] {
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0
-    }, new double[] {
-        0, 0, 0, 1, 0
-    }));// 14
-
-    trainingSet.add(new DataSetRow(new double[] {
-        0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0
-    }, new double[] {
-        0, 1, 0, 0, 0
-    }));// 15
-
-    trainingSet.add(new DataSetRow(new double[] {
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0
-    }, new double[] {
-        0, 0, 0, 1, 0
-    }));// 16
-
-    trainingSet.add(new DataSetRow(new double[] {
-        0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0
-    }, new double[] {
-        0, 1, 0, 0, 0
-    }));// 17
-
-    trainingSet.add(new DataSetRow(new double[] {
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1
-    }, new double[] {
-        0, 1, 0, 0, 0
-    }));// 18
-
-    trainingSet.add(new DataSetRow(new double[] {
-        0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1
-    }, new double[] {
-        0, 1, 0, 0, 0
-    }));// 19
-
-    trainingSet.add(new DataSetRow(new double[] {
-        0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1
-    }, new double[] {
-        0, 0, 0, 0, 1
-    }));// 20
-
-    trainingSet.add(new DataSetRow(new double[] {
-        0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
-    }, new double[] {
-        1, 1, 0, 0, 0
-    }));// 21
+    DataSet trainingSet = new DataSet(5, 1);
+    trainingSet.add(TrafficLights.create()
+        .red()
+        .walking()
+        .thenOk());
+    trainingSet.add(TrafficLights.create()
+        .orange()
+        .walking()
+        .thenOk());
+    trainingSet.add(TrafficLights.create()
+        .green()
+        .walking()
+        .thenOk());
+    trainingSet.add(TrafficLights.create()
+        .red()
+        .carComing()
+        .walking()
+        .thenDead());
+    trainingSet.add(TrafficLights.create()
+        .orange()
+        .carComing()
+        .walking()
+        .thenDead());
+    trainingSet.add(TrafficLights.create()
+        .green()
+        .carComing()
+        .walking()
+        .thenDead());
+    trainingSet.add(TrafficLights.create()
+        .red()
+        .carComing()
+        .thenOk());
+    trainingSet.add(TrafficLights.create()
+        .orange()
+        .carComing()
+        .thenOk());
+    trainingSet.add(TrafficLights.create()
+        .green()
+        .carComing()
+        .thenOk());
 
     // create perceptron neural network
-    NeuralNetwork myPerceptron = new Perceptron(12, 5);
+    NeuralNetwork myPerceptron = new Perceptron(5, 1);
     // learn the training set
     myPerceptron.learn(trainingSet);
-    // save trained perceptron
-    myPerceptron.save("mySamplePerceptron.nnet");
-    // load saved neural network
-    NeuralNetwork loadedPerceptron = NeuralNetwork.createFromFile("mySamplePerceptron.nnet");
-    // test loaded neural network
-    System.out.println("Testing loaded perceptron");
-    testNeuralNetwork(loadedPerceptron, trainingSet);
-    unknownCaseNeuralNetwork(loadedPerceptron);
 
+    // save trained perceptron
+    myPerceptron.save("trafficLights.nnet");
+    // load saved neural network
+    NeuralNetwork loadedPerceptron = NeuralNetwork.createFromFile("trafficLights.nnet");
+
+    {
+      double[] answer = question(loadedPerceptron, TrafficLights.create()
+          .red()
+          .walking()
+          .toInput());
+
+      System.out.println(TrafficLights.toAnswer(answer));
+    }
+    {
+      double[] answer = question(loadedPerceptron, TrafficLights.create()
+          .red()
+          .carComing()
+          .walking()
+          .toInput());
+
+      System.out.println(TrafficLights.toAnswer(answer));
+    }
+    {
+      double[] answer = question(loadedPerceptron, TrafficLights.create()
+          .red()
+          .carComing()
+          .toInput());
+
+      System.out.println(TrafficLights.toAnswer(answer));
+    }
+
+    // test loaded neural network
+    // System.out.println("Testing loaded perceptron");
+    // testNeuralNetwork(loadedPerceptron, trainingSet);
+    // unknownCaseNeuralNetwork(loadedPerceptron);
+
+  }
+
+  public static double[] question(NeuralNetwork neuralNetwork, double[] input) {
+    neuralNetwork.setInput(input);
+    neuralNetwork.calculate();
+    return neuralNetwork.getOutput();
   }
 
   public static void testNeuralNetwork(NeuralNetwork neuralNet, DataSet testSet) {
